@@ -1,14 +1,13 @@
 package com.example.order.order.service.impl;
 
-import com.example.order.order.dto.OrderRequestDto;
-import com.example.order.order.dto.OrderResponseDto;
-import com.example.order.order.dto.ProductResponseDto;
-import com.example.order.order.dto.UserResponseDto;
+import com.example.order.order.dto.*;
 import com.example.order.order.model.Order;
 import com.example.order.order.repository.OrderRepository;
 import com.example.order.order.service.OrderService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.List;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -67,4 +66,20 @@ public class OrderServiceImpl implements OrderService {
                 savedOrder.getTotalPrice()
         );
     }
+
+    @Override
+    public List<GetAllOrderResponseDto> fetchAllOrders() {
+        List<Order> orders = orderRepository.findAll();
+
+        return orders.stream()
+                .map(order -> new GetAllOrderResponseDto(
+                        order.getId(),
+                        order.getUserId(),
+                        order.getProductId(),
+                        order.getQuantity(),
+                        order.getTotalPrice()
+                ))
+                .toList();
+    }
+
 }
